@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Signup() {
+const CompanyLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,55 +22,42 @@ export default function Signup() {
     setLoading(true);
     setError('');
 
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
-
-    // Validate password length
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch('http://localhost:3000/api/auth/loginCompany', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage
+        // Store token and company data in localStorage
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('user', JSON.stringify(data.company));
+        localStorage.setItem('userType', 'company');
         
         // Redirect to dashboard
         navigate('/dashboard');
       } else {
-        setError(data.message || 'Registration failed');
+        setError(data.message || 'Login failed');
       }
     } catch (err) {
-      setError('Network error. Please check if the backend is running on http://localhost:3000 and MongoDB is connected.');
-      console.error('Registration error:', err);
+      setError('Network error. Please check if the backend is running.');
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLoginClick = () => {
-    navigate('/login');
+  const handleRegisterClick = () => {
+    navigate('/company/register');
+  };
+
+  const handleBackToLanding = () => {
+    navigate('/');
   };
 
   return (
@@ -81,7 +66,17 @@ export default function Signup() {
         
         {/* Form Section */}
         <div className="flex-1 p-8 md:p-10">
-          <h2 className="text-[32px] font-bold mb-[25px] text-[#111]">Sign up</h2>
+          <div className="flex items-center mb-6">
+            <button
+              onClick={handleBackToLanding}
+              className="text-blue-600 hover:text-blue-800 mr-4"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h2 className="text-[32px] font-bold text-[#111]">Company Login</h2>
+          </div>
 
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -91,18 +86,9 @@ export default function Signup() {
 
           <form onSubmit={handleSubmit} className="space-y-4 text-[#333]">
             <input
-              type="text"
-              name="username"
-              placeholder="Your Username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              className="w-full border border-[#ccc] px-4 py-3 text-sm rounded-md"
-            />
-            <input
               type="email"
               name="email"
-              placeholder="Your Email"
+              placeholder="Company Email"
               value={formData.email}
               onChange={handleInputChange}
               required
@@ -117,41 +103,24 @@ export default function Signup() {
               required
               className="w-full border border-[#ccc] px-4 py-3 text-sm rounded-md"
             />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Repeat your password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              required
-              className="w-full border border-[#ccc] px-4 py-3 text-sm rounded-md"
-            />
-
-            <label className="text-[13px] mt-2 block">
-              <input type="checkbox" className="mr-2" required />
-              I agree all statements in{' '}
-              <a href="#" className="text-[#2575fc] underline">
-                Terms of service
-              </a>
-            </label>
 
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-[#2575fc] hover:bg-[#1b5fd1] disabled:bg-[#ccc] text-white py-3 text-[16px] rounded-md mt-2"
             >
-              {loading ? 'Creating Account...' : 'Submit'}
+              {loading ? 'Logging in...' : 'Login'}
             </button>
 
             <div className="text-center text-sm mt-4">
               <p>
-                I am already member{' '}
+                Don't have a company account?{' '}
                 <a 
                   href="#" 
-                  onClick={handleLoginClick}
-                  className="text-[#333] underline cursor-pointer"
+                  onClick={handleRegisterClick}
+                  className="text-[#2575fc] underline cursor-pointer"
                 >
-                  Login
+                  Register Company
                 </a>
               </p>
             </div>
@@ -159,14 +128,20 @@ export default function Signup() {
         </div>
 
         {/* Image Section */}
-        <div className="hidden md:flex flex-1 items-center justify-center bg-white p-8">
-          <img
-            src="download.jpg"
-            alt="Sign up illustration"
-            className="max-w-full h-auto"
-          />
+        <div className="hidden md:flex flex-1 items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8">
+          <div className="text-center">
+            <div className="w-32 h-32 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back!</h3>
+            <p className="text-gray-600">Access your company dashboard and manage your hiring process.</p>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default CompanyLogin; 
