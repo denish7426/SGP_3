@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FaEnvelope, FaPhone, FaGraduationCap, FaBriefcase, FaTimes } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaGraduationCap, FaBriefcase, FaTimes, FaComments } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const CompanyDashboard = () => {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -52,6 +54,13 @@ const CompanyDashboard = () => {
             <h1 className="text-3xl font-bold text-purple-700">Company Dashboard</h1>
             <p className="text-gray-500">Browse & filter employee profiles</p>
           </div>
+          <button
+            onClick={() => navigate('/messages')}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
+          >
+            <FaComments />
+            <span>Messages</span>
+          </button>
         </div>
       </header>
 

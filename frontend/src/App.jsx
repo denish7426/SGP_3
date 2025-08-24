@@ -11,6 +11,8 @@ import CompanyRegister from '../pages/CompanyRegister/CompanyRegister.jsx';
 import EmployeeLogin from '../pages/EmployeeLogin/EmployeeLogin.jsx';
 import EmployeeRegister from '../pages/EmployeeRegister/EmployeeRegister.jsx';
 import CompanyDashboard from '../pages/CompanyDashboard/CompanyDashboard';
+import MessagingPage from '../pages/Messaging/MessagingPage';
+import MessagingNotification from './components/Messaging/MessagingNotification';
 
 function App() {
   return (
@@ -30,7 +32,13 @@ function App() {
         {/* Employee Routes */}
         <Route path="/employee/login" element={<EmployeeLogin />} />
         <Route path="/employee/register" element={<EmployeeRegister />} />
+        
+        {/* Messaging Route */}
+        <Route path="/messages" element={<MessagingPage />} />
       </Routes>
+      
+      {/* Global Messaging Notification */}
+      <MessagingNotification />
     </Router>
   );
 }

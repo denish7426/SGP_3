@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaComments } from 'react-icons/fa';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -56,12 +57,21 @@ const Dashboard = () => {
                 Welcome back, {userType === 'company' ? user?.companyName : `${user?.firstName} ${user?.lastName}`}!
               </p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate('/messages')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
+              >
+                <FaComments />
+                <span>Messages</span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
