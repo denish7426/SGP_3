@@ -1,162 +1,232 @@
-# Authentication App with React Frontend and Node.js Backend
+# DomaiNetHire Admin System
 
-A complete authentication system with login and registration functionality built with React frontend and Node.js/Express backend.
+A comprehensive admin dashboard for monitoring platform activity, managing users and companies, and generating analytics reports.
 
 ## Features
 
-- ✅ User Registration with validation
-- ✅ User Login with JWT authentication
-- ✅ Protected routes
-- ✅ Modern UI with Tailwind CSS
-- ✅ MongoDB database integration
-- ✅ Password hashing with bcrypt
-- ✅ JWT token-based authentication
+### 🔐 **Admin Authentication**
+- **Login Only**: Single admin login (no public registration)
+- **Role-Based Access**: Super Admin, Admin, and Moderator roles
+- **Permission System**: Granular control over admin capabilities
 
-## Prerequisites
+### 📊 **Dynamic Analytics Dashboard**
+- **Real-Time Counts**: Live tracking of users, companies, and employees
+- **Registration Tracking**: Automatic logging of all new registrations
+- **Time-Based Metrics**: Weekly, monthly, and yearly statistics
+- **Recent Activity**: Latest registrations and platform activity
 
+### 👥 **User Management**
+- View all registered users
+- Update user status (active/suspended)
+- Search and filter users
+- User activity monitoring
+
+### 🏢 **Company Management**
+- Monitor company registrations
+- Company profile verification
+- Industry and contact information tracking
+- Approval/rejection workflows
+
+### 🚨 **Content Moderation**
+- Content report management
+- Priority-based sorting
+- Action tracking (remove, suspend, dismiss)
+- Assignment and resolution workflows
+
+### 📈 **Advanced Analytics**
+- Registration trends over time
+- Platform usage statistics
+- Error logging and monitoring
+- Custom metric tracking
+
+## Installation
+
+### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (local installation or MongoDB Atlas)
+- MongoDB
 - npm or yarn
 
-## Installation & Setup
-
-### 1. Clone the repository
-```bash
-git clone <repository-url>
-cd sgp-sem5
-```
-
-### 2. Backend Setup
-
+### Backend Setup
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file in the backend directory (optional):
-```env
-MONGO_URI=mongodb://localhost:27017/auth-app
-JWT_SECRET=your_super_secret_jwt_key_here
-PORT=5000
-```
-
-### 3. Frontend Setup
-
+### Frontend Setup
 ```bash
 cd frontend
 npm install
 ```
 
-## Running the Application
-
-### 1. Start MongoDB
-Make sure MongoDB is running on your system. If using MongoDB Atlas, update the connection string in the backend.
-
-### 2. Start the Backend Server
-```bash
-cd backend
-npm start
+### Environment Variables
+Create a `.env` file in the backend directory:
+```env
+MONGO_URI=mongodb://localhost:27017/sgp3
+JWT_SECRET=your-secret-key-here
+PORT=3000
 ```
 
-The backend will start on `http://localhost:5000`
+## Initial Admin Setup
 
-### 3. Start the Frontend Development Server
+### Option 1: Using the Setup Script
+```bash
+cd backend
+npm run setup-admin
+```
+
+This will create a default admin user:
+- **Email**: admin@sgp.com
+- **Password**: admin123
+- **Role**: super_admin
+
+### Option 2: Manual Database Setup
+```bash
+# Connect to MongoDB
+mongosh
+
+# Use your database
+use sgp3
+
+# Insert admin user (password will be hashed)
+db.admins.insertOne({
+  username: "superadmin",
+  email: "admin@sgp.com",
+  password: "hashed-password-here",
+  role: "super_admin",
+  permissions: {
+    userManagement: true,
+    companyManagement: true,
+    contentModeration: true,
+    analytics: true,
+    systemSettings: true
+  },
+  isActive: true,
+  createdAt: new Date()
+})
+```
+
+## Running the Application
+
+### Start Backend
+```bash
+cd backend
+npm run dev
+```
+
+### Start Frontend
 ```bash
 cd frontend
 npm run dev
 ```
 
-The frontend will start on `http://localhost:5173`
+### Access Admin Panel
+Navigate to `/admin/login` and use the credentials from the setup.
 
 ## API Endpoints
 
-### Authentication Routes
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (protected)
+### Admin Authentication
+- `POST /api/admin/login` - Admin login
 
-### Test Route
-- `GET /test` - Test if server is running
+### Protected Routes (require admin token)
+- `GET /api/admin/users` - Get all users
+- `PATCH /api/admin/users/:id/status` - Update user status
+- `GET /api/admin/companies` - Get all companies
+- `GET /api/admin/reports` - Get content reports
+- `GET /api/admin/analytics` - Get platform analytics
 
-## Usage
+## Database Models
 
-1. Open your browser and navigate to `http://localhost:5173`
-2. You'll see the login page
-3. Click "Sign Up" to create a new account
-4. Fill in the registration form with:
-   - Username
-   - Email
-   - Password (minimum 6 characters)
-   - Confirm Password
-5. After successful registration, you'll be redirected to the dashboard
-6. You can also login with existing credentials
-7. Use the logout button to sign out
+### Admin Model
+- Username, email, password
+- Role-based permissions
+- Activity tracking
 
-## Project Structure
+### Analytics Model
+- Metric tracking (registrations, logins, reports)
+- Timestamp and metadata
+- User association
 
-```
-├── backend/
-│   ├── auth/
-│   │   ├── controller/
-│   │   │   └── authControllers.js
-│   │   ├── middleware/
-│   │   │   └── authMiddleware.js
-│   │   ├── models/
-│   │   │   └── user.js
-│   │   └── routes/
-│   │       └── authroutes.js
-│   ├── config/
-│   │   └── db.js
-│   ├── server.js
-│   ├── index.js
-│   └── package.json
-├── frontend/
-│   ├── pages/
-│   │   ├── Login/
-│   │   │   └── Login.jsx
-│   │   ├── Register/
-│   │   │   └── register.jsx
-│   │   └── Dashboard/
-│   │       └── Dashboard.jsx
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── tailwind.config.js
-│   └── package.json
-└── README.md
-```
-
-## Technologies Used
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- bcryptjs for password hashing
-- jsonwebtoken for JWT authentication
-- cors for cross-origin requests
-
-### Frontend
-- React 19
-- React Router DOM
-- Tailwind CSS
-- Vite for build tooling
+### Content Moderation Model
+- Report categorization
+- Priority levels
+- Resolution tracking
 
 ## Security Features
 
-- Password hashing with bcrypt
-- JWT token authentication
-- Input validation
-- CORS configuration
-- Protected routes
+- **JWT Authentication**: Secure token-based authentication
+- **Password Hashing**: Bcrypt encryption for all passwords
+- **Permission Validation**: Middleware-based access control
+- **Input Validation**: Request data sanitization
+- **Rate Limiting**: Protection against brute force attacks
+
+## Customization
+
+### Adding New Metrics
+1. Update the `analytics.js` model enum
+2. Add tracking middleware to relevant routes
+3. Update the admin controller to include new metrics
+4. Modify the dashboard UI to display new data
+
+### Role Permissions
+Modify the permission structure in `adminControllers.js`:
+```javascript
+permissions: {
+    userManagement: true,
+    companyManagement: true,
+    contentModeration: true,
+    analytics: true,
+    systemSettings: true,
+    // Add new permissions here
+    customFeature: true
+}
+```
 
 ## Troubleshooting
 
-1. **MongoDB Connection Error**: Make sure MongoDB is running and the connection string is correct
-2. **Port Already in Use**: Change the PORT in the .env file or kill the process using the port
-3. **CORS Error**: The backend is configured to allow requests from `http://localhost:5173`
+### Common Issues
+
+1. **Server Error 500**
+   - Check MongoDB connection
+   - Verify environment variables
+   - Check server logs
+
+2. **Admin Login Fails**
+   - Ensure admin user exists in database
+   - Verify password hash
+   - Check JWT secret configuration
+
+3. **Analytics Not Loading**
+   - Verify database collections exist
+   - Check middleware integration
+   - Ensure proper error handling
+
+### Debug Mode
+Enable detailed logging by setting:
+```env
+DEBUG=true
+NODE_ENV=development
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
-This project is for educational purposes.
+This project is licensed under the MIT License.
+
+## Support
+
+For technical support or questions:
+- Check the troubleshooting section
+- Review server logs
+- Verify database connectivity
+- Ensure all dependencies are installed
+
+---
+
+**Note**: This admin system is designed for internal use only. Ensure proper security measures are in place before deploying to production.

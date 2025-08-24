@@ -72,10 +72,20 @@ const LandingPage = () => {
 
         {/* Footer */}
         <div className="text-center mt-12">
-          <p className="text-gray-500">
+          <p className="text-gray-500 mb-4">
             Already have an account?{' '}
             <span className="text-blue-600 font-medium">Contact support</span>
           </p>
+                     <div className="border-t border-gray-200 pt-4">
+             <div className="flex flex-col space-y-2">
+               <a
+                 href="/admin/login"
+                 className="text-sm text-gray-400 hover:text-gray-600 transition-colors duration-200"
+               >
+                 Admin Login
+               </a>
+             </div>
+           </div>
         </div>
       </div>
     </div>

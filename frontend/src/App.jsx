@@ -11,8 +11,13 @@ import CompanyRegister from '../pages/CompanyRegister/CompanyRegister.jsx';
 import EmployeeLogin from '../pages/EmployeeLogin/EmployeeLogin.jsx';
 import EmployeeRegister from '../pages/EmployeeRegister/EmployeeRegister.jsx';
 import CompanyDashboard from '../pages/CompanyDashboard/CompanyDashboard';
+<<<<<<< HEAD
 import MessagingPage from '../pages/Messaging/MessagingPage';
 import MessagingNotification from './components/Messaging/MessagingNotification';
+=======
+import AdminLogin from '../pages/AdminLogin/AdminLogin';
+import AdminDashboard from '../pages/AdminDashboard/AdminDashboard';
+>>>>>>> c9e738aed44d71ac6a96457f40761632120ab4a3
 
 function App() {
   return (
@@ -33,8 +38,14 @@ function App() {
         <Route path="/employee/login" element={<EmployeeLogin />} />
         <Route path="/employee/register" element={<EmployeeRegister />} />
         
+<<<<<<< HEAD
         {/* Messaging Route */}
         <Route path="/messages" element={<MessagingPage />} />
+=======
+                 {/* Admin Routes */}
+         <Route path="/admin/login" element={<AdminLogin />} />
+         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+>>>>>>> c9e738aed44d71ac6a96457f40761632120ab4a3
       </Routes>
       
       {/* Global Messaging Notification */}
