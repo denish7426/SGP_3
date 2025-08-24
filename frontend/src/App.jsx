@@ -11,6 +11,8 @@ import CompanyRegister from '../pages/CompanyRegister/CompanyRegister.jsx';
 import EmployeeLogin from '../pages/EmployeeLogin/EmployeeLogin.jsx';
 import EmployeeRegister from '../pages/EmployeeRegister/EmployeeRegister.jsx';
 import CompanyDashboard from '../pages/CompanyDashboard/CompanyDashboard';
+import AdminLogin from '../pages/AdminLogin/AdminLogin';
+import AdminDashboard from '../pages/AdminDashboard/AdminDashboard';
 
 function App() {
   return (
@@ -30,6 +32,10 @@ function App() {
         {/* Employee Routes */}
         <Route path="/employee/login" element={<EmployeeLogin />} />
         <Route path="/employee/register" element={<EmployeeRegister />} />
+        
+                 {/* Admin Routes */}
+         <Route path="/admin/login" element={<AdminLogin />} />
+         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

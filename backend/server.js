@@ -16,9 +16,13 @@ app.use(cors({
 
 // Import your routes
 const authRoutes = require('./auth/routes/authroutes');
+const adminRoutes = require('./auth/routes/adminRoutes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 console.log("🔗 Auth routes mounted at /api/auth");
+console.log("🔗 Admin routes mounted at /api/admin");
 console.log(`🌐 Frontend URL: http://localhost:5173`);
 
 // --- MongoDB Connection ---
