@@ -10,6 +10,7 @@ import CompanyLogin from '../pages/CompanyLogin/CompanyLogin.jsx';
 import CompanyRegister from '../pages/CompanyRegister/CompanyRegister.jsx';
 import EmployeeLogin from '../pages/EmployeeLogin/EmployeeLogin.jsx';
 import EmployeeRegister from '../pages/EmployeeRegister/EmployeeRegister.jsx';
+import CompanyDashboard from '../pages/CompanyDashboard/CompanyDashboard';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         {/* Company Routes */}
         <Route path="/company/login" element={<CompanyLogin />} />
         <Route path="/company/register" element={<CompanyRegister />} />
+        <Route path="/companyDashboard" element={<CompanyDashboard />} />
         
         {/* Employee Routes */}
         <Route path="/employee/login" element={<EmployeeLogin />} />

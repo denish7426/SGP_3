@@ -40,7 +40,7 @@ const CompanyLogin = () => {
         localStorage.setItem('userType', 'company');
         
         // Redirect to dashboard
-        navigate('/dashboard');
+        navigate('/companyDashboard');
       } else {
         setError(data.message || 'Login failed');
       }
