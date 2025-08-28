@@ -1,7 +1,6 @@
-const {User, Company, Employee} = require('../models/user');
+const {User, Company, Employee , Job} = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_here';
 
 exports.register = async (req, res) => {
@@ -309,6 +308,45 @@ exports.getAllEmployees = async (req, res) => {
 
 exports.companyDashboard = (req, res) => {
   res.json({ message: "Company dashboard endpoint" });
+};
+
+// Example job posting 
+
+exports.companypostjob = async (req, res) => {
+  const { title, description, location, salary, companyId } = req.body;
+  if (!title || !description || !location || !companyId) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  try {
+    const job = new Job({ title, description, location, salary, companyId });
+    await job.save();
+    res.json({ message: "Job posted successfully", job });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+//list of all jobs
+exports.companyalljobs = async (req, res) => {
+  try {
+    const jobs = await Job.find().populate('companyId', 'companyName');
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+// Employee applies for a job
+exports.employeeapplyjob =  async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    job.applicants.push(req.body.employeeId);
+    await job.save();
+    res.json({ message: 'Applied successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 

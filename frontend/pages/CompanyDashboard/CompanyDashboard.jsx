@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaEnvelope, FaPhone, FaGraduationCap, FaBriefcase, FaTimes, FaComments } from "react-icons/fa";
+import axios from "axios";
+import { FaEnvelope, FaPhone, FaGraduationCap, FaBriefcase, FaTimes, FaComments, FaClipboardList, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const CompanyDashboard = () => {
@@ -11,6 +12,10 @@ const CompanyDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+  const [jobs, setJobs] = useState([]);
+
+
+  // Fetch employees
   useEffect(() => {
     const fetchEmployees = async () => {
       setLoading(true);
@@ -45,6 +50,14 @@ const CompanyDashboard = () => {
       );
     }
   }, [selectedSkill, employees]);
+  
+
+  // Fetch jobs posted by company
+  useEffect(() => {
+   axios.get('http://localhost:3000/api/auth/companyalljobs')
+      .then(res => setJobs(res.data))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen min-w-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -54,15 +67,73 @@ const CompanyDashboard = () => {
             <h1 className="text-3xl font-bold text-purple-700">Company Dashboard</h1>
             <p className="text-gray-500">Browse & filter employee profiles</p>
           </div>
-          <button
-            onClick={() => navigate('/messages')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
-          >
-            <FaComments />
-            <span>Messages</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate('/company/post-job')}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+            >
+              <FaPlus />
+              <span>Post Job</span>
+            </button>
+            <button
+              onClick={() => navigate('/messages')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+            >
+              <FaComments />
+              <span>Messages</span>
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Job List Section */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+  <div className="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 className="text-2xl font-semibold text-purple-700 flex items-center gap-2 mb-6">
+      <FaClipboardList /> Your Posted Jobs
+    </h2>
+    {jobs.length === 0 ? (
+      <div className="flex flex-col items-center justify-center py-12">
+        <FaBriefcase className="text-5xl text-gray-300 mb-4" />
+        <div className="text-gray-500 text-lg">No jobs posted yet.</div>
+        <button
+          onClick={() => navigate('/company/post-job')}
+          className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md flex items-center gap-2"
+        >
+          <FaPlus />
+          <span>Post Your First Job</span>
+        </button>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {jobs.map(j => (
+          <div key={j._id} className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <FaBriefcase className="text-purple-600" />
+                <span className="font-bold text-lg text-purple-700">{j.title}</span>
+              </div>
+              <div className="text-gray-600 mb-1">
+                <span className="mr-2">{j.location}</span>
+                <span className="mr-2">₹{j.salary} LPA</span>
+              </div>
+              <div className="text-gray-500 text-sm mb-2">{j.description}</div>
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                <FaClipboardList className="text-blue-500" />
+                {j.applicants?.length || 0} Applicants
+              </span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                {j.status || "Open"}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
 
       {/* Filter Bar */}
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 items-center">

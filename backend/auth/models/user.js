@@ -131,7 +131,24 @@ const employeeSchema = new mongoose.Schema({
     }
 });
 
+// Example Job Schema (if needed for job postings)
+
+const jobSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  location: String,
+  salary: String,
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company', 
+    required: true
+  },
+  applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Employee' }],
+  createdAt: { type: Date, default: Date.now }
+});
+
 const Company = mongoose.model('Company', companySchema);
 const User = mongoose.model('User', userSchema);
 const Employee = mongoose.model('Employee', employeeSchema);
-module.exports = {User, Company, Employee};
+const Job = mongoose.model('Job', jobSchema)
+module.exports = {User, Company, Employee, Job};

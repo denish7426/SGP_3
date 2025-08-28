@@ -6,6 +6,7 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 dotenv.config();
 
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -14,6 +15,7 @@ const io = new Server(server, {
     credentials: true
   }
 });
+// app.use('/api/jobs', jobRoutes);
 
 const PORT = process.env.PORT || 3000;
 
@@ -49,7 +51,7 @@ app.get('/health', (req, res) => {
 
 // Import your routes
 const authRoutes = require('./auth/routes/authroutes');
-<<<<<<< HEAD
+
 const messageRoutes = require('./routes/messageRoutes');
 
 app.use('/api/auth', authRoutes);
@@ -57,7 +59,7 @@ app.use('/api/messages', messageRoutes);
 
 console.log("🔗 Auth routes mounted at /api/auth");
 console.log("💬 Message routes mounted at /api/messages");
-=======
+
 const adminRoutes = require('./auth/routes/adminRoutes');
 
 app.use('/api/auth', authRoutes);
@@ -65,8 +67,12 @@ app.use('/api/admin', adminRoutes);
 
 console.log("🔗 Auth routes mounted at /api/auth");
 console.log("🔗 Admin routes mounted at /api/admin");
->>>>>>> c9e738aed44d71ac6a96457f40761632120ab4a3
+
 console.log(`🌐 Frontend URL: http://localhost:5173`);
+
+// const jobRoutes = require('./auth/routes/authroutes');
+
+// app.use('/api/jobs', jobRoutes);
 
 // --- MongoDB Connection ---
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/sgp3';

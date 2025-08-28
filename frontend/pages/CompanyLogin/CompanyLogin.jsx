@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const CompanyLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -38,7 +39,9 @@ const CompanyLogin = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.company));
         localStorage.setItem('userType', 'company');
-        
+        localStorage.setItem('companyId', data.company.id);
+        console.log('Login response:', data);        
+        console.log(data.company.id) // <-- Correct way
         // Redirect to dashboard
         navigate('/companyDashboard');
       } else {
@@ -63,7 +66,6 @@ const CompanyLogin = () => {
   return (
     <div className="min-h-screen min-w-screen bg-[#f8f8f8] flex items-center justify-center px-4">
       <div className="bg-white flex flex-col md:flex-row w-full max-w-[900px] rounded-[15px] shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden">
-        
         {/* Form Section */}
         <div className="flex-1 p-8 md:p-10">
           <div className="flex items-center mb-6">
@@ -144,4 +146,4 @@ const CompanyLogin = () => {
   );
 };
 
-export default CompanyLogin; 
+export default CompanyLogin;

@@ -11,13 +11,18 @@ import CompanyRegister from '../pages/CompanyRegister/CompanyRegister.jsx';
 import EmployeeLogin from '../pages/EmployeeLogin/EmployeeLogin.jsx';
 import EmployeeRegister from '../pages/EmployeeRegister/EmployeeRegister.jsx';
 import CompanyDashboard from '../pages/CompanyDashboard/CompanyDashboard';
-<<<<<<< HEAD
+
 import MessagingPage from '../pages/Messaging/MessagingPage';
 import MessagingNotification from './components/Messaging/MessagingNotification';
-=======
+
 import AdminLogin from '../pages/AdminLogin/AdminLogin';
 import AdminDashboard from '../pages/AdminDashboard/AdminDashboard';
->>>>>>> c9e738aed44d71ac6a96457f40761632120ab4a3
+import EmployeeOnboarding from '../pages/Onboarding/EmployeeOnboarding.jsx';
+import EmployeeJobFeed from '../pages/Jobs/EmployeeJobFeed.jsx';
+import CompanyProfile from '../pages/CompanyProfile/CompanyProfile.jsx';
+import PostJob from '../pages/CompanyDashboard/PostJob.jsx';
+
+
 
 function App() {
   return (
@@ -33,19 +38,24 @@ function App() {
         <Route path="/company/login" element={<CompanyLogin />} />
         <Route path="/company/register" element={<CompanyRegister />} />
         <Route path="/companyDashboard" element={<CompanyDashboard />} />
+        {/* <Route path="/company" element={<CompanyDashboard />} /> */}
+        <Route path="/company/post-job" element={<PostJob />} />
         
         {/* Employee Routes */}
         <Route path="/employee/login" element={<EmployeeLogin />} />
         <Route path="/employee/register" element={<EmployeeRegister />} />
+        <Route path="/onboarding" element={<EmployeeOnboarding />} />
+        <Route path="/jobs" element={<EmployeeJobFeed />} />
+        <Route path="/company/:id" element={<CompanyProfile />} />
         
-<<<<<<< HEAD
+
         {/* Messaging Route */}
         <Route path="/messages" element={<MessagingPage />} />
-=======
+
                  {/* Admin Routes */}
          <Route path="/admin/login" element={<AdminLogin />} />
          <Route path="/admin/dashboard" element={<AdminDashboard />} />
->>>>>>> c9e738aed44d71ac6a96457f40761632120ab4a3
+
       </Routes>
       
       {/* Global Messaging Notification */}
