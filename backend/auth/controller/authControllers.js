@@ -337,15 +337,30 @@ exports.companyalljobs = async (req, res) => {
 
 
 // Employee applies for a job
-exports.employeeapplyjob =  async (req, res) => {
+exports.applyToJob = async (req, res) => {
+  const { jobId, employeeId } = req.body;
   try {
-    const job = await Job.findById(req.params.jobId);
-    if (!job) return res.status(404).json({ error: 'Job not found' });
-    job.applicants.push(req.body.employeeId);
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+    if (job.applicants.includes(employeeId)) {
+      return res.status(400).json({ error: "Already applied" });
+    }
+    job.applicants.push(employeeId);
     await job.save();
-    res.json({ message: 'Applied successfully' });
+    res.json({ success: true });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//total applicants
+exports.Applicants = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.jobId)
+      .populate('applicants', 'firstName lastName email skills');
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 

@@ -21,6 +21,7 @@ import EmployeeOnboarding from '../pages/Onboarding/EmployeeOnboarding.jsx';
 import EmployeeJobFeed from '../pages/Jobs/EmployeeJobFeed.jsx';
 import CompanyProfile from '../pages/CompanyProfile/CompanyProfile.jsx';
 import PostJob from '../pages/CompanyDashboard/PostJob.jsx';
+import ApplicantsList from '../pages/CompanyDashboard/ApplicantsList.jsx';
 
 
 
@@ -40,6 +41,7 @@ function App() {
         <Route path="/companyDashboard" element={<CompanyDashboard />} />
         {/* <Route path="/company" element={<CompanyDashboard />} /> */}
         <Route path="/company/post-job" element={<PostJob />} />
+        <Route path="/companyDashboard/applicants/:jobId" element={<ApplicantsList />} />
         
         {/* Employee Routes */}
         <Route path="/employee/login" element={<EmployeeLogin />} />

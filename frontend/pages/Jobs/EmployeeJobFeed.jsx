@@ -46,6 +46,16 @@ const EmployeeJobFeed = () => {
     );
   };
 
+  const handleApply = async (jobId) => {
+  const employeeId = localStorage.getItem('employeeId'); // Set this at login
+  try {
+    await axios.post('http://localhost:3000/api/auth/apply', { jobId, employeeId });
+    alert('Applied successfully!');
+  } catch (err) {
+    alert(err.response?.data?.error || 'Failed to apply');
+  }
+};
+
   return (
     <div className="min-h-screen min-w-screen bg-gray-50">
       <header className="bg-white border-b sticky top-0 z-10">
@@ -126,7 +136,12 @@ const EmployeeJobFeed = () => {
                   <div className="text-lg font-semibold">₹{job.salary} LPA</div>
                 </div>
                 <div className="space-x-2">
-                  <button className="px-3 py-2 rounded-lg bg-purple-600 text-white">Apply</button>
+                  <button
+                    className="px-3 py-2 rounded-lg bg-purple-600 text-white"
+                    onClick={() => handleApply(job._id)}
+                  >
+                   Apply
+                  </button>
                   <button className="px-3 py-2 rounded-lg bg-gray-100">Save</button>
                 </div>
               </div>

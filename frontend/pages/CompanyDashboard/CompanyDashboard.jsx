@@ -15,6 +15,28 @@ const CompanyDashboard = () => {
   const [jobs, setJobs] = useState([]);
 
 
+    {jobs.map(j => (
+    <div key={j._id} className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl shadow-lg p-5 flex flex-col justify-between hover:shadow-xl transition">
+      {/* ...existing job info... */}
+      <div className="flex items-center justify-between mt-4">
+        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+          <FaClipboardList className="text-blue-500" />
+          {j.applicants?.length || 0} Applicants
+        </span>
+        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+          {j.status || "Open"}
+        </span>
+        <button
+          className="ml-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-md text-xs"
+          onClick={() => navigate(`/companyDashboard/applicants/${j._id}`)}
+        >
+          View Applicants
+        </button>
+      </div>
+    </div>
+  ))}
+
+
   // Fetch employees
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -124,6 +146,12 @@ const CompanyDashboard = () => {
                 <FaClipboardList className="text-blue-500" />
                 {j.applicants?.length || 0} Applicants
               </span>
+              <button
+                className="ml-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-md text-xs"
+                onClick={() => navigate(`/companyDashboard/applicants/${j._id}`)}
+              >
+                View Applicants
+              </button>
               <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
                 {j.status || "Open"}
               </span>

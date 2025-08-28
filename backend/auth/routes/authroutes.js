@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { register, login, registerCompany, registerEmployee, loginCompany, 
     loginEmployee , getAllEmployees , companyDashboard, companypostjob,
-    employeeapplyjob,companyalljobs} = require('../controller/authControllers');
+    applyToJob,companyalljobs,Applicants} = require('../controller/authControllers');
 const auth = require('../middleware/authMiddleware');
 
 // POST /api/auth/register
@@ -34,25 +34,30 @@ router.route('/post').post(companypostjob);
 
 //
 
-router.route('/:jobId/apply').post(employeeapplyjob)
+// router.route('/:jobId/apply').post(applyToJob)
 
 // router.route('/').get(companyalljobs)
 
 router.route('/companyalljobs').get(companyalljobs)
+
+router.post('/apply', applyToJob);
+
 
 // GET /api/auth/me - Get current user (protected route)
 router.route('/me').get(auth, (req, res) => {
     res.json({ user: req.user });
 });
 
+router.route('/:jobId').get(Applicants) 
+
 // router.post('/post', (req, res) => {
 //   res.json({ message: 'Job post API is working!', data: req.body });
 // });const express = require('express');
 // const router = express.Router();
 
-router.post('/post', (req, res) => {
-  res.json({ message: 'Job post API is working!', data: req.body });
-});
+// router.post('/post', (req, res) => {
+//   res.json({ message: 'Job post API is working!', data: req.body });
+// });
 
 
 
