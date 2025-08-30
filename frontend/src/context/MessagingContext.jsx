@@ -113,39 +113,45 @@ export const MessagingProvider = ({ children }) => {
 
   // Fetch contacts
   const fetchContacts = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/messages/contacts', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setContacts(data);
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:3000/api/messages/contacts', { // <-- Update endpoint if needed
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setContacts(data);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+  }
+};
 
   // Send message
   const sendMessage = async (receiverId, content) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/messages/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          receiverId,
-          content,
-          messageType: 'text'
-        })
-      });
+  try {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    const user = userData ? JSON.parse(userData) : null;
+    const senderId = user ? user.id : null;
+
+    const response = await fetch('http://localhost:3000/api/messages/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        senderId,      // <-- Add this line
+        receiverId,
+        content,
+        messageType: 'text'
+      })
+    });
+
       
       if (response.ok) {
         const message = await response.json();

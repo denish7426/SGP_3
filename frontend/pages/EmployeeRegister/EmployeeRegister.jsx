@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// IMPORTANT: If you encounter an error like "Could not resolve 'react-icons/fa'",
+// please install the package in your project by running this command in your terminal:
+// npm install react-icons
+// or
+// yarn add react-icons
+import { FaArrowLeft, FaUserTie, FaChevronDown } from 'react-icons/fa'; // FaUserTie for employee icon, FaChevronDown for dropdown
 
 const EmployeeRegister = () => {
   const navigate = useNavigate();
@@ -75,209 +81,273 @@ const EmployeeRegister = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen min-w-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Register as Employee</h1>
-          <p className="text-xl text-gray-600">Join DomaiNetHire and discover amazing opportunities.</p>
-        </div>
+  const handleBackToLanding = () => {
+    navigate('/');
+  };
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+  return (
+    <div className="min-h-screen min-w-screen bg-gradient-to-br from-[#FFE8B4] via-[#FF9F4F] to-[#B85D34] flex items-center justify-center px-4 py-8 font-sans text-[#6B3226]">
+      <div className="bg-white flex flex-col md:flex-row w-full max-w-[1200px] rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        
+        {/* Form Section */}
+        <div className="flex-1 p-8 md:p-10 lg:p-12">
+          <div className="flex items-center mb-8">
+            <button
+              onClick={handleBackToLanding}
+              className="text-[#6B3226] hover:text-[#B85D34] transition-colors duration-200 mr-4 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-white"
+            >
+              <FaArrowLeft className="w-6 h-6" />
+            </button>
+            <h2 className="text-4xl font-extrabold text-[#6B3226]">Register as Employee</h2>
+          </div>
+
           {message && (
-            <div className={`p-4 rounded-lg font-medium text-center mb-6 ${
-              message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            <div className={`mb-6 p-4 rounded-lg text-sm ${
+              message.type === 'success' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'
             }`}>
               {message.text}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 text-[#6B3226]">
             {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-black text-lg font-semibold text-gray-700 mb-2">
-                  First Name <span className="text-red-500">*</span>
-                </label>
+              {/* First Name */}
+              <div className="input-box relative">
                 <input
                   type="text"
                   name="firstName"
+                  id="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="e.g., John"
-                  className={`w-full text-black p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
-                    errors.firstName ? 'border-red-500' : 'border-gray-300'
-                  }`}
                   required
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
+                    errors.firstName ? 'border-red-500' : 'border-gray-300'
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="firstName" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'First Name'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
               </div>
 
-              <div>
-                <label className="block text-lg font-semibold text-gray-700 mb-2">
-                  Last Name <span className="text-red-500">*</span>
-                </label>
+              {/* Last Name */}
+              <div className="input-box relative">
                 <input
                   type="text"
                   name="lastName"
+                  id="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="e.g., Doe"
-                  className={`w-full text-black p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
-                    errors.lastName ? 'border-red-500' : 'border-gray-300'
-                  }`}
                   required
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
+                    errors.lastName ? 'border-red-500' : 'border-gray-300'
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="lastName" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'Last Name'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-lg font-semibold text-gray-700 mb-2">
-                  Email <span className="text-red-500">*</span>
-                </label>
+              {/* Email */}
+              <div className="input-box relative">
                 <input
                   type="email"
                   name="email"
+                  id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="e.g., john.doe@email.com"
-                  className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
                   required
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="email" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'Email'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
 
-              <div>
-                <label className="block text-lg font-semibold text-gray-700 mb-2">
-                  Password <span className="text-red-500">*</span>
-                </label>
+              {/* Password */}
+              <div className="input-box relative">
                 <input
                   type="password"
                   name="password"
+                  id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Enter password"
-                  className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
                   required
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="password" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'Password'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-lg font-semibold text-gray-700 mb-2">Phone Number</label>
+              {/* Phone Number */}
+              <div className="input-box relative">
                 <input
                   type="tel"
                   name="phoneNumber"
+                  id="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  placeholder="e.g., +1 123-456-7890"
-                  className={`w-full p-3 text-black border rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                     errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="phoneNumber" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'Phone Number'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
               </div>
 
-              <div>
-                <label className="block text-lg font-semibold text-gray-700 mb-2">Current Role</label>
+              {/* Current Role */}
+              <div className="input-box relative">
                 <input
                   type="text"
                   name="currentRole"
+                  id="currentRole"
                   value={formData.currentRole}
                   onChange={handleChange}
-                  placeholder="e.g., Software Engineer"
-                  className={`w-full p-3 text-black border rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                  placeholder=" " // Important: Add a space as placeholder
+                  className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                     errors.currentRole ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
                 />
+                <label htmlFor="currentRole" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                  {'Current Role'.split('').map((char, index) => (
+                    <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </label>
                 {errors.currentRole && <p className="text-red-500 text-sm mt-1">{errors.currentRole}</p>}
               </div>
             </div>
 
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 mb-2">Years of Experience</label>
+            {/* Years of Experience */}
+            <div className="input-box relative">
               <input
                 type="number"
                 name="yearsOfExperience"
+                id="yearsOfExperience"
                 value={formData.yearsOfExperience}
                 onChange={handleChange}
-                placeholder="e.g., 3"
+                placeholder=" " // Important: Add a space as placeholder
                 min="0"
-                className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                   errors.yearsOfExperience ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
               />
+              <label htmlFor="yearsOfExperience" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                {'Years of Experience'.split('').map((char, index) => (
+                  <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                ))}
+              </label>
               {errors.yearsOfExperience && <p className="text-red-500 text-sm mt-1">{errors.yearsOfExperience}</p>}
             </div>
 
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 mb-2">Skills (comma-separated)</label>
+            {/* Skills */}
+            <div className="input-box relative">
               <input
                 type="text"
                 name="skills"
+                id="skills"
                 value={formData.skills}
                 onChange={handleChange}
-                placeholder="e.g., JavaScript, React, Node.js, Python"
-                className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                placeholder=" " // Important: Add a space as placeholder
+                className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                   errors.skills ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
               />
+              <label htmlFor="skills" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                {'Skills (comma-separated)'.split('').map((char, index) => (
+                  <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                ))}
+              </label>
               {errors.skills && <p className="text-red-500 text-sm mt-1">{errors.skills}</p>}
             </div>
 
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 mb-2">Preferred Domains (comma-separated)</label>
+            {/* Preferred Domains */}
+            <div className="input-box relative">
               <input
                 type="text"
                 name="preferredDomains"
+                id="preferredDomains"
                 value={formData.preferredDomains}
                 onChange={handleChange}
-                placeholder="e.g., Web Development, Mobile Apps, Data Science"
-                className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                placeholder=" " // Important: Add a space as placeholder
+                className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                   errors.preferredDomains ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
               />
+              <label htmlFor="preferredDomains" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                {'Preferred Domains (comma-separated)'.split('').map((char, index) => (
+                  <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                ))}
+              </label>
               {errors.preferredDomains && <p className="text-red-500 text-sm mt-1">{errors.preferredDomains}</p>}
             </div>
 
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 mb-2">Resume Link (optional)</label>
+            {/* Resume Link */}
+            <div className="input-box relative">
               <input
                 type="url"
                 name="resumeLink"
+                id="resumeLink"
                 value={formData.resumeLink}
                 onChange={handleChange}
-                placeholder="e.g., https://drive.google.com/your-resume"
-                className={`w-full p-3 border text-black rounded-lg focus:ring-2 focus:ring-purple-500 transition duration-200 ${
+                placeholder=" " // Important: Add a space as placeholder
+                className={`input text-base outline-none p-3 block w-full rounded-xl border-2 ${
                   errors.resumeLink ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } bg-transparent shadow-sm transition-all duration-200 ease-in-out focus:border-[#B85D34] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]`}
               />
+              <label htmlFor="resumeLink" className="label absolute pointer-events-none left-3 top-3 flex text-gray-500 text-base">
+                {'Resume Link (optional)'.split('').map((char, index) => (
+                  <span key={index} className="char transition-all duration-200 ease-in-out" style={{ '--index': index }}>{char === ' ' ? '\u00A0' : char}</span>
+                ))}
+              </label>
               {errors.resumeLink && <p className="text-red-500 text-sm mt-1">{errors.resumeLink}</p>}
             </div>
 
+
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-bold py-4 px-6 rounded-lg text-xl shadow-lg hover:from-purple-700 hover:to-purple-800 transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
+              className="w-full bg-[#6B3226] hover:bg-opacity-90 disabled:bg-gray-400 text-[#FFE8B4] py-3 text-lg font-semibold rounded-xl mt-6 shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]"
             >
               {loading ? 'Registering...' : 'Register as Employee'}
             </button>
 
-            <div className="text-center text-sm mt-4">
-              <p>
+            <div className="text-center text-sm mt-6">
+              <p className="text-gray-700">
                 Already have an employee account?{' '}
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   onClick={() => navigate('/employee/login')}
-                  className="text-purple-600 underline cursor-pointer"
+                  className="text-[#B85D34] hover:text-[#6B3226] underline cursor-pointer font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-white rounded-md p-1"
                 >
                   Login
                 </a>
@@ -285,9 +355,59 @@ const EmployeeRegister = () => {
             </div>
           </form>
         </div>
+
+        {/* Right Panel (Image Section) */}
+        <div className="hidden md:flex flex-1 items-center justify-center bg-gradient-to-br from-[#B85D34] to-[#6B3226] p-8 lg:p-12 rounded-r-3xl text-white text-center">
+          <div className="space-y-6">
+            <div className="w-36 h-36 bg-[#FFE8B4] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+              <FaUserTie className="w-20 h-20 text-[#6B3226]" /> {/* Employee icon */}
+            </div>
+            <h3 className="text-3xl font-bold text-[#FFE8B4] mb-3">Join Our Network!</h3>
+            <p className="text-[#FF9F4F] text-lg">Register your profile to discover new opportunities.</p>
+          </div>
+        </div>
       </div>
+
+      {/* Custom CSS for Input Field Label Animation */}
+      <style>{`
+        .input-box .input:focus,
+        .input-box .input:not(:placeholder-shown) {
+            border-color: #B85D34; /* Burnt Sienna on focus */
+        }
+        .input-box .label {
+            color: #999; /* Default label color */
+            font-size: 16px;
+            font-weight: normal;
+            position: absolute;
+            pointer-events: none;
+            left: 15px;
+            top: 12px;
+            display: flex;
+            transition: all .2s ease;
+        }
+        .input-box .char {
+            transition: .2s ease all;
+            transition-delay: calc(var(--index) * .05s);
+        }
+        .input-box .input:focus~label .char,
+        .input-box .input:not(:placeholder-shown)~label .char {
+            transform: translateY(-28px); /* Adjusted for larger padding */
+            font-size: 14px;
+            color: #6B3226; /* Dark Cognac on focus/valid */
+            background: white; /* Match input background */
+            padding: 0 5px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+        /* Adjust label position when input is focused/valid to prevent overlap with input border */
+        .input-box .input:focus~label,
+        .input-box .input:not(:placeholder-shown)~label {
+            left: 10px; /* Adjust left position slightly */
+            top: -5px; /* Move label up */
+        }
+      `}</style>
     </div>
   );
 };
 
-export default EmployeeRegister; 
+export default EmployeeRegister;

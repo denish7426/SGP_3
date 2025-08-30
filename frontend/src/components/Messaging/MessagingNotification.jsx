@@ -42,14 +42,26 @@ const MessagingNotification = () => {
   return (
     <button
       onClick={() => navigate('/messages')}
-      className="fixed bottom-6 right-6 bg-red-500 hover:bg-red-600 text-white rounded-full p-3 shadow-lg transition-all duration-200 transform hover:scale-105 z-50"
+      className="fixed bottom-6 right-6 bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] rounded-full p-4 shadow-lg transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 animate-bounce-slow"
     >
       <div className="relative">
-        <FaComments className="text-xl" />
-        <span className="absolute -top-2 -right-2 bg-white text-red-500 text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+        <FaComments className="text-2xl" />
+        <span className="absolute -top-2 -right-2 bg-[#FFE8B4] text-[#6B3226] text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold border border-[#B85D34] animate-pulse-small">
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>
       </div>
+      <style>{`
+        @keyframes bounceSlow {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-5px) scale(1.05); }
+        }
+        @keyframes pulseSmall {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+        .animate-bounce-slow { animation: bounceSlow 3s infinite ease-in-out; }
+        .animate-pulse-small { animation: pulseSmall 1.5s infinite ease-in-out; }
+      `}</style>
     </button>
   );
 };

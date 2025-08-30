@@ -95,8 +95,18 @@ const getMessages = async (req, res) => {
 // Send a new message
 const sendMessage = async (req, res) => {
   try {
+    // Validate required fields
     const { receiverId, content, messageType = 'text' } = req.body;
+    if (!req.user) {
+      console.error('sendMessage: req.user is undefined. Token missing or invalid. Headers:', req.headers);
+      return res.status(401).json({ message: 'Authentication required. Token missing or invalid.' });
+    }
     const { id: userId, type: userType } = req.user;
+
+    if (!receiverId || !content || !userId || !userType) {
+      console.error('sendMessage: Missing required fields', { receiverId, content, userId, userType, body: req.body, user: req.user });
+      return res.status(400).json({ message: 'Missing required fields', details: { receiverId, content, userId, userType } });
+    }
 
     // Validate receiver exists
     let receiver;
@@ -105,7 +115,6 @@ const sendMessage = async (req, res) => {
     } else if (userType === 'employee') {
       receiver = await Company.findById(receiverId);
     } else {
-      // For regular users, try to find in both Employee and Company collections
       receiver = await Employee.findById(receiverId) || await Company.findById(receiverId);
     }
 
@@ -114,6 +123,10 @@ const sendMessage = async (req, res) => {
     }
 
     // Generate conversation ID
+    if (typeof Message.generateConversationId !== 'function') {
+      console.error('Message.generateConversationId is not defined');
+      return res.status(500).json({ message: 'Conversation ID generation error' });
+    }
     const conversationId = Message.generateConversationId(userId, receiverId);
 
     // Create new message
@@ -136,9 +149,10 @@ const sendMessage = async (req, res) => {
     res.status(201).json(message);
   } catch (error) {
     console.error('Error sending message:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
+
 
 // Get users/companies for new conversation
 const getContacts = async (req, res) => {
@@ -158,7 +172,7 @@ const getContacts = async (req, res) => {
       const companies = await Company.find({}, 'companyName contactEmail');
       contacts = [...employees, ...companies];
     }
-
+    console.log('Contacts found:', contacts);
     res.json(contacts);
   } catch (error) {
     console.error('Error getting contacts:', error);

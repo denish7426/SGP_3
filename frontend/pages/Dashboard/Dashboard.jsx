@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaComments } from 'react-icons/fa';
+// IMPORTANT: If you encounter an error like "Could not resolve 'react-icons/fa'",
+// please install the package in your project by running this command in your terminal:
+// npm install react-icons
+// or
+// yarn add react-icons
+import { FaComments, FaSignOutAlt, FaBriefcase, FaUserCircle, FaChartLine, FaCalendarAlt, FaCheckCircle, FaAward } from 'react-icons/fa'; // Added more icons for dashboard features
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Custom animation classes
+  const fadeIn = "animate-fadeIn";
+  const slideInUp = "animate-slideInUp";
 
   useEffect(() => {
     // Check if user is logged in
@@ -39,215 +48,259 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFE8B4] via-[#FF9F4F] to-[#B85D34] font-sans text-[#6B3226]">
+        <div className="text-2xl font-semibold animate-pulse text-[#6B3226]">Loading dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen min-w-screen bg-gray-100">
+    <div className="min-h-screen min-w-screen bg-gradient-to-br from-[#FFE8B4] via-[#FF9F4F] to-[#B85D34] font-sans text-[#6B3226] antialiased">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">
-                Welcome back, {userType === 'company' ? user?.companyName : `${user?.firstName} ${user?.lastName}`}!
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/messages')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
-              >
-                <FaComments />
-                <span>Messages</span>
-              </button>
-              <button
-                onClick={() => navigate('/jobs')}
-                className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-md transition-colors"
-              >
-                Explore Jobs
-              </button>
-              <button
-                onClick={() => navigate('/onboarding')}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
-              >
-                Onboarding
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors"
-              >
-                Logout
-              </button>
-            </div>
+      <header className="bg-white shadow-xl sticky top-0 z-10 border-b-4 border-[#6B3226]">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h1 className={`text-4xl font-extrabold text-[#6B3226] tracking-tight ${fadeIn}`}>Dashboard</h1>
+            <p className={`text-gray-700 text-base mt-1 ${fadeIn} delay-100`}>
+              Welcome back, {userType === 'company' ? user?.companyName : `${user?.firstName} ${user?.lastName}`}!
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => navigate('/messages')}
+              className={`bg-[#B85D34] hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] transform hover:-translate-y-1 active:scale-95 ${slideInUp}`}
+            >
+              <FaComments className="text-xl" />
+              <span className="text-lg">Messages</span>
+            </button>
+            <button
+              onClick={() => navigate('/jobs')}
+              className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-3 rounded-xl 
+                font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none 
+                focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] 
+                transform hover:-translate-y-1 active:scale-95 ${slideInUp} delay-100`}
+            >
+              Explore Jobs
+            </button>
+            <button
+              onClick={() => navigate('/onboarding')}
+              className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-3 rounded-xl 
+                font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none 
+                focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] 
+                transform hover:-translate-y-1 active:scale-95 ${slideInUp} delay-100`}
+            >
+              Onboarding
+            </button>
+            <button
+              onClick={handleLogout}
+              className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-3 py-1 rounded-xl 
+                font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none 
+                focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] 
+                transform hover:-translate-y-1 active:scale-95 ${slideInUp} delay-100`}
+            >
+              <FaSignOutAlt className="text-xl" />
+              <span className="text-lg">Logout</span>
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                {userType === 'company' ? 'Company Information' : 'Employee Information'}
-              </h3>
-              
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {userType === 'company' ? (
-                  <>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Company Name</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.companyName}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Contact Email</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.contactEmail}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Company ID</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.id}</dd>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Full Name</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.firstName} {user?.lastName}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Email</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.email}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Employee ID</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{user?.id}</dd>
-                    </div>
-                  </>
-                )}
+      <main className="max-w-7xl mx-auto py-12 px-4">
+        <div className={`bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100 ${fadeIn} delay-400`}>
+          <h3 className="text-3xl font-bold text-[#6B3226] border-b-2 border-gray-200 pb-5 mb-8 flex items-center gap-3">
+            <FaUserCircle className="text-[#6B3226] text-2xl" />
+            {userType === 'company' ? 'Company Information' : 'Employee Information'}
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 text-lg">
+            {userType === 'company' ? (
+              <>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Company Name</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.companyName}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Contact Email</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.contactEmail}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Company ID</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.id}</dd>
+                </div>
+                {/* Add more company-specific details */}
+              </>
+            ) : (
+              <>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Full Name</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.firstName} {user?.lastName}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Email</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.email}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Employee ID</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.id}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Current Role</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.currentRole || 'N/A'}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Years of Experience</dt>
+                  <dd className="text-[#6B3226] font-semibold">{user?.yearsOfExperience || 'N/A'}</dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Skills</dt>
+                  <dd className="flex flex-wrap gap-2 mt-1">
+                    {user?.skills?.length > 0 ? (
+                      user.skills.map(skill => (
+                        <span key={skill} className="bg-[#B85D34] text-[#FFE8B4] px-3.5 py-1.5 rounded-full text-xs font-medium border border-[#FF9F4F] opacity-90">
+                          {skill}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500 italic text-sm">No skills listed.</span>
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-600 font-medium mb-1">Preferred Domains</dt>
+                  <dd className="flex flex-wrap gap-2 mt-1">
+                    {user?.preferredDomains?.length > 0 ? (
+                      user.preferredDomains.map(domain => (
+                        <span key={domain} className="bg-[#B85D34] text-[#FFE8B4] px-3.5 py-1.5 rounded-full text-xs font-medium border border-[#FF9F4F] opacity-90">
+                          {domain}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500 italic text-sm">No preferred domains listed.</span>
+                    )}
+                  </dd>
+                </div>
+                {/* Add more employee-specific details */}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Additional Dashboard Content */}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Profile Completion Card */}
+          <div className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transform hover:-translate-y-2 transition-all duration-300 ease-in-out ${slideInUp} delay-500`}>
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-[#6B3226] rounded-xl flex items-center justify-center shadow-md">
+                  <FaUserCircle className="w-6 h-6 text-[#FFE8B4]" />
+                </div>
+              </div>
+              <div className="ml-5 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-600 truncate">Profile Status</dt>
+                  <dd className="text-xl font-bold text-[#6B3226]">Complete</dd>
+                </dl>
               </div>
             </div>
           </div>
 
-          {/* Additional Dashboard Content */}
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className={`w-8 h-8 ${userType === 'company' ? 'bg-blue-500' : 'bg-purple-500'} rounded-md flex items-center justify-center`}>
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Profile</dt>
-                      <dd className="text-lg font-medium text-gray-900">Complete</dd>
-                    </dl>
-                  </div>
+          {/* Status Card */}
+          <div className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transform hover:-translate-y-2 transition-all duration-300 ease-in-out ${slideInUp} delay-600`}>
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-[#FF9F4F] rounded-xl flex items-center justify-center shadow-md">
+                  <FaCheckCircle className="w-6 h-6 text-white" />
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Status</dt>
-                      <dd className="text-lg font-medium text-gray-900">Active</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Last Login</dt>
-                      <dd className="text-lg font-medium text-gray-900">Now</dd>
-                    </dl>
-                  </div>
-                </div>
+              <div className="ml-5 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-600 truncate">Account Status</dt>
+                  <dd className="text-xl font-bold text-[#6B3226]">Active</dd>
+                </dl>
               </div>
             </div>
           </div>
 
-          {/* User Type Specific Content */}
-          {userType === 'company' && (
-            <div className="mt-6 bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Company Dashboard Features
-                </h3>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Active Job Postings</div>
+          {/* Last Login Card */}
+          <div className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transform hover:-translate-y-2 transition-all duration-300 ease-in-out ${slideInUp} delay-700`}>
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-[#B85D34] rounded-xl flex items-center justify-center shadow-md">
+                  <FaCalendarAlt className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <div className="ml-5 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-600 truncate">Last Login</dt>
+                  <dd className="text-xl font-bold text-[#6B3226]">Just now</dd> {/* Can be dynamic */}
+                </dl>
+              </div>
+            </div>
+          </div>
+          
+          {/* Example of a dynamic card based on userType */}
+          {userType === 'employee' && (
+            <div className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transform hover:-translate-y-2 transition-all duration-300 ease-in-out ${slideInUp} delay-800`}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#6B3226] rounded-xl flex items-center justify-center shadow-md">
+                    <FaAward className="w-6 h-6 text-[#FFE8B4]" />
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-green-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Applications Received</div>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Hired Candidates</div>
-                  </div>
+                </div>
+                <div className="ml-5 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-600 truncate">Offers Received</dt>
+                    <dd className="text-xl font-bold text-[#6B3226]">0</dd> {/* Replace with actual data */}
+                  </dl>
                 </div>
               </div>
             </div>
           )}
 
-          {userType === 'employee' && (
-            <div className="mt-6 bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Employee Dashboard Features
-                </h3>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Jobs Applied</div>
+          {userType === 'company' && (
+            <div className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transform hover:-translate-y-2 transition-all duration-300 ease-in-out ${slideInUp} delay-800`}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#6B3226] rounded-xl flex items-center justify-center shadow-md">
+                    <FaBriefcase className="w-6 h-6 text-[#FFE8B4]" />
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Interviews Scheduled</div>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <div className="text-2xl font-bold text-green-600 mb-2">0</div>
-                    <div className="text-sm text-gray-600">Offers Received</div>
-                  </div>
+                </div>
+                <div className="ml-5 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-600 truncate">Active Job Postings</dt>
+                    <dd className="text-xl font-bold text-[#6B3226]">0</dd> {/* Replace with actual data */}
+                  </dl>
                 </div>
               </div>
             </div>
           )}
         </div>
       </main>
+
+      {/* Custom CSS for Animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+        .animate-slideInUp { animation: slideInUp 0.7s ease-out forwards; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+        .delay-800 { animation-delay: 0.8s; }
+      `}</style>
     </div>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

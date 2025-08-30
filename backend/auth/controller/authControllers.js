@@ -1,4 +1,4 @@
-const {User, Company, Employee , Job} = require('../models/user');
+const {User, Company, Employee, Job} = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_here';
@@ -328,10 +328,46 @@ exports.companypostjob = async (req, res) => {
 //list of all jobs
 exports.companyalljobs = async (req, res) => {
   try {
-    const jobs = await Job.find().populate('companyId', 'companyName');
-    res.json(jobs);
+    const jobs = await Job.find();
+    if (!jobs) {
+      return res.status(404).json({ error: "No jobs found" });
+    }
+
+    const populatedJobs = await Promise.all(jobs.map(async (job) => {
+      const jobObj = job.toObject();
+
+      // Populate company information
+      if (job.companyId) {
+        try {
+          const company = await Company.findById(job.companyId);
+          jobObj.companyName = company ? company.companyName : 'Unknown Company';
+        } catch (error) {
+          console.error('Error fetching company:', error);
+          jobObj.companyName = 'Unknown Company';
+        }
+      } else {
+        jobObj.companyName = 'Unknown Company';
+      }
+
+      // Unique applicants
+      if (job.applicants && job.applicants.length > 0) {
+  const uniqueApplicantIds = new Set(
+    job.applicants
+      .filter(id => id) // <-- This line fixes the error
+      .map(id => id.toString())
+  );
+  jobObj.applicants = Array.from(uniqueApplicantIds).map(id => ({ _id: id }));
+} else {
+  jobObj.applicants = [];
+}
+
+      return jobObj;
+    }));
+
+    res.json(populatedJobs);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error in companyalljobs:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
 };
 
@@ -356,12 +392,33 @@ exports.applyToJob = async (req, res) => {
 //total applicants
 exports.Applicants = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId)
-      .populate('applicants', 'firstName lastName email skills');
-    res.json(job);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { jobId } = req.params;
+    const job = await Job.findById(jobId).populate('applicants');
+    console.log('Requested jobId:', jobId);
+     if (!job) {
+      return res.status(404).json({ message: 'Job not found.' });
+    }
+    
+    // Remove duplicate applicants by creating a Set of unique IDs
+    const uniqueApplicants = [];
+    const applicantIds = new Set();
+    
+    if (job.applicants && job.applicants.length > 0) {
+      job.applicants.forEach(applicant => {
+        const applicantId = applicant._id.toString();
+        if (!applicantIds.has(applicantId)) {
+          applicantIds.add(applicantId);
+          uniqueApplicants.push(applicant);
+        }
+      });
+    }
+    
+    res.json({
+      applicants: uniqueApplicants,
+      title: job.title
+    });
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-

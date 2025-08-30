@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useMessaging } from '../../context/MessagingContext';
+import { useMessaging } from '../../context/MessagingContext'; // Assuming this context provides messaging logic
 import { FaArrowLeft, FaPaperPlane } from 'react-icons/fa';
 
 const ChatWindow = () => {
@@ -48,8 +48,8 @@ const ChatWindow = () => {
 
     setIsSending(true);
     try {
-      const otherParticipant = getOtherParticipant();
-      await sendMessage(otherParticipant._id, newMessage.trim());
+  const otherParticipant = getOtherParticipant();
+  await sendMessage(otherParticipant._id, newMessage.trim()); // Pass correct receiverId
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -65,46 +65,50 @@ const ChatWindow = () => {
     });
   };
 
+  if (!currentConversation) {
+    return null; // Should not happen if rendered conditionally by MessagingInterface
+  }
+
   const otherParticipant = getOtherParticipant();
+  const userData = localStorage.getItem('user');
+  const user = userData ? JSON.parse(userData) : null;
+  const currentUserId = user ? user.id : null;
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-white rounded-r-2xl md:rounded-3xl shadow-xl border border-gray-100">
       {/* Header */}
-      <div className="flex items-center p-4 border-b border-gray-200">
+      <div className="flex items-center p-4 md:p-5 border-b-2 border-gray-200 bg-gradient-to-r from-[#FFE8B4] to-[#FF9F4F] rounded-tr-2xl md:rounded-tr-3xl shadow-sm">
         {isMobile && (
           <button
             onClick={() => setCurrentConversation(null)}
-            className="mr-3 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+            className="mr-3 p-2 text-[#6B3226] hover:text-[#B85D34] hover:bg-white rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4]"
           >
-            <FaArrowLeft className="text-sm" />
+            <FaArrowLeft className="text-lg" />
           </button>
         )}
         
-        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+        <div className="w-12 h-12 bg-[#6B3226] rounded-full flex items-center justify-center text-[#FFE8B4] font-bold text-xl shadow-md">
           {otherParticipant.name?.charAt(0)?.toUpperCase() || 'U'}
         </div>
         
-        <div className="ml-3 flex-1">
-          <h3 className="text-lg font-semibold text-gray-800">
+        <div className="ml-4 flex-1">
+          <h3 className="text-xl font-semibold text-[#6B3226]">
             {otherParticipant.name || otherParticipant.email}
           </h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-700">
             {otherParticipant.email}
           </p>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
-            <p>No messages yet. Start the conversation!</p>
+            <p className="text-lg font-medium">No messages yet. Start the conversation!</p>
           </div>
         ) : (
           messages.map((message) => {
-            const userData = localStorage.getItem('user');
-            const user = userData ? JSON.parse(userData) : null;
-            const currentUserId = user ? user.id : null;
             const isOwnMessage = message.sender._id === currentUserId;
             
             return (
@@ -113,15 +117,15 @@ const ChatWindow = () => {
                 className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-xl shadow-md ${
                     isOwnMessage
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-[#6B3226] text-[#FFE8B4] rounded-br-none' // Own messages: Pine Tree, Buttercream text
+                      : 'bg-gray-200 text-[#6B3226] rounded-bl-none' // Other messages: Light gray, Pine Tree text
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm leading-relaxed">{message.content}</p>
                   <p className={`text-xs mt-1 ${
-                    isOwnMessage ? 'text-blue-100' : 'text-gray-500'
+                    isOwnMessage ? 'text-[#FFE8B4] opacity-70' : 'text-gray-600'
                   }`}>
                     {formatTime(message.createdAt)}
                   </p>
@@ -134,28 +138,43 @@ const ChatWindow = () => {
       </div>
 
       {/* Message Input */}
-      <div className="p-4 border-t border-gray-200">
-        <form onSubmit={handleSendMessage} className="flex space-x-2">
+      <div className="p-4 md:p-5 border-t-2 border-gray-200 bg-gray-50">
+        <form onSubmit={handleSendMessage} className="flex space-x-3">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+            className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:border-[#B85D34] text-[#6B3226] shadow-sm transition-all duration-200 ease-in-out"
             disabled={isSending}
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || isSending}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-5 py-3 bg-[#6B3226] text-[#FFE8B4] rounded-xl hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all duration-200 ease-in-out transform active:scale-95"
           >
-            <FaPaperPlane className="text-sm" />
+            <FaPaperPlane className="text-lg" />
           </button>
         </form>
       </div>
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #B85D34; /* Burnt Sienna */
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #6B3226; /* Dark Cognac */
+        }
+      `}</style>
     </div>
   );
 };
 
 export default ChatWindow;
- 

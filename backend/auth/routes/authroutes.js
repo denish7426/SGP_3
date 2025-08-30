@@ -34,7 +34,7 @@ router.route('/post').post(companypostjob);
 
 //
 
-// router.route('/:jobId/apply').post(applyToJob)
+router.route('/applicants/:jobId').get(Applicants);
 
 // router.route('/').get(companyalljobs)
 

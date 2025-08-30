@@ -1,6 +1,6 @@
 import React from 'react';
-import { useMessaging } from '../../context/MessagingContext';
-import { FaCircle } from 'react-icons/fa';
+import { useMessaging } from '../../context/MessagingContext'; // Assuming this context provides messaging logic
+import { FaCircle, FaUser } from 'react-icons/fa'; // Added FaUser for default avatar
 
 const ConversationList = () => {
   const {
@@ -44,17 +44,17 @@ const ConversationList = () => {
 
   if (conversations.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center text-gray-500">
-          <p className="text-sm">No conversations yet</p>
-          <p className="text-xs">Start a new conversation to begin messaging</p>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="text-center text-gray-600">
+          <p className="text-lg font-medium">No conversations yet</p>
+          <p className="text-sm mt-2">Start a new conversation to begin messaging</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto custom-scrollbar">
       {conversations.map((conversation) => {
         const otherParticipant = getOtherParticipant(conversation);
         const isActive = currentConversation?.conversationId === conversation.conversationId;
@@ -64,27 +64,27 @@ const ConversationList = () => {
           <div
             key={conversation.conversationId}
             onClick={() => handleConversationClick(conversation)}
-            className={`flex items-center p-4 cursor-pointer transition-colors ${
+            className={`flex items-center p-4 cursor-pointer transition-all duration-200 ease-in-out border-l-4 ${
               isActive 
-                ? 'bg-blue-50 border-r-2 border-blue-500' 
-                : 'hover:bg-gray-50'
+                ? 'bg-[#FFE8B4] border-[#6B3226] shadow-inner' // Active: Golden Sand background, Pine Tree border
+                : 'hover:bg-gray-100 border-transparent' // Inactive: subtle hover
             }`}
           >
             {/* Avatar */}
             <div className="relative flex-shrink-0">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                {otherParticipant.name?.charAt(0)?.toUpperCase() || 'U'}
+              <div className="w-12 h-12 bg-[#FF9F4F] rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-sm">
+                {otherParticipant.name?.charAt(0)?.toUpperCase() || <FaUser className="text-xl text-white" />}
               </div>
               {hasUnread && (
-                <FaCircle className="absolute -top-1 -right-1 text-red-500 text-xs" />
+                <FaCircle className="absolute -top-1 -right-1 text-red-500 text-xs animate-pulse" />
               )}
             </div>
 
             {/* Content */}
-            <div className="flex-1 ml-3 min-w-0">
-              <div className="flex items-center justify-between">
-                <h3 className={`text-sm font-medium truncate ${
-                  hasUnread ? 'text-gray-900' : 'text-gray-700'
+            <div className="flex-1 ml-4 min-w-0">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className={`text-base font-semibold truncate ${
+                  hasUnread ? 'text-[#6B3226]' : 'text-gray-800'
                 }`}>
                   {otherParticipant.name || otherParticipant.email}
                 </h3>
@@ -93,14 +93,14 @@ const ConversationList = () => {
                 </span>
               </div>
               
-              <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center justify-between">
                 <p className={`text-sm truncate ${
-                  hasUnread ? 'text-gray-900 font-medium' : 'text-gray-500'
+                  hasUnread ? 'text-[#6B3226] font-medium' : 'text-gray-600'
                 }`}>
                   {conversation.lastMessage.content}
                 </p>
                 {hasUnread && (
-                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2 flex-shrink-0">
+                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 ml-2 flex-shrink-0 font-bold animate-bounce-small">
                     {conversation.unreadCount}
                   </span>
                 )}
@@ -109,6 +109,32 @@ const ConversationList = () => {
           </div>
         );
       })}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #B85D34; /* Burnt Sienna */
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #6B3226; /* Dark Cognac */
+        }
+        @keyframes bounceSmall {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+        .animate-bounce-small { animation: bounceSmall 1s infinite ease-in-out; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: .5; }
+        }
+      `}</style>
     </div>
   );
 };
