@@ -7,6 +7,7 @@ import axios from "axios";
 // yarn add react-icons
 import { FaEnvelope, FaPhone, FaGraduationCap, FaBriefcase, FaTimes, FaComments, FaClipboardList, FaPlus, FaMapMarkerAlt, FaUsers, FaCoins, FaFilter, FaUserCircle, FaBuilding, FaChevronDown } from "react-icons/fa"; // Added FaChevronDown for dropdown arrow
 import { useNavigate } from "react-router-dom";
+import FeatureDashboard from "./FeatureDashboard";
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();
@@ -79,13 +80,13 @@ const CompanyDashboard = () => {
             <p className={`text-gray-700 text-base mt-1 ${fadeIn} delay-100`}>Manage your posted jobs & discover top talent.</p>
           </div>
           <div className="flex flex-wrap gap-4">
-            <button
+            {/* <button
               onClick={() => navigate('/company/post-job')}
               className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] transform hover:-translate-y-1 active:scale-95 ${slideInUp}`}
             >
               <FaPlus className="text-xl" />
               <span className="text-lg">Post New Job</span>
-            </button>
+            </button> */}
             <button
               onClick={() => navigate('/messages')}
               className={`bg-[#B85D34] hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] transform hover:-translate-y-1 active:scale-95 ${slideInUp} delay-100`}
@@ -97,149 +98,18 @@ const CompanyDashboard = () => {
         </div>
       </header>
 
-      {/* Your Posted Jobs Section */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className={`bg-white rounded-2xl shadow-2xl p-8 mb-12 border border-gray-100 ${fadeIn} delay-200`}>
-          <h2 className="text-3xl font-bold text-[#6B3226] flex items-center gap-3 mb-8 pb-5 border-b-2 border-gray-200">
-            <FaClipboardList className="text-[#6B3226] text-2xl" /> Your Posted Jobs
-          </h2>
-          {jobs.length === 0 ? (
-            <div className={`flex flex-col items-center justify-center py-20 text-center bg-[#FFE8B4] rounded-xl border-4 border-[#6B3226] shadow-inner ${fadeIn} delay-300`}>
-              <FaBriefcase className="text-8xl text-[#6B3226] opacity-30 mb-8 animate-bounce-slow" />
-              <p className="text-[#6B3226] text-2xl font-semibold mb-6">No jobs posted yet. Ignite your hiring!</p>
-              <button
-                onClick={() => navigate('/company/post-job')}
-                className="bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-10 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] transform hover:-translate-y-1 active:scale-95"
-              >
-                <FaPlus className="text-2xl" />
-                <span>Post Your First Job</span>
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {jobs.map((j, index) => (
-                <div key={j._id} className={`bg-white rounded-xl shadow-lg p-7 flex flex-col justify-between hover:shadow-2xl transition-shadow duration-300 border border-gray-200 group transform hover:-translate-y-2 relative overflow-hidden ${slideInUp} delay-${index * 100 + 400}`}>
-                  <div className="absolute top-0 left-0 w-full h-2 bg-[#B85D34] animate-gradient-slide"></div> {/* Burnt Sienna top border with animation */}
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className="p-3 bg-[#FFE8B4] rounded-lg flex-shrink-0 shadow-sm animate-pulse-small">
-                      <FaBriefcase className="text-[#6B3226] text-2xl" />
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className="font-bold text-xl text-[#6B3226] leading-tight group-hover:text-[#B85D34] transition-colors duration-200">{j.title}</h3>
-                      <p className="text-sm text-gray-700 mt-1 flex items-center gap-1"><FaBuilding className="text-gray-500" /> {j.companyName}</p>
-                    </div>
-                  </div>
-                  <div className="text-gray-700 text-base space-y-2 mb-6">
-                    <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-gray-500" /> {j.location}</p>
-                    <p className="flex items-center gap-2"><FaCoins className="text-gray-500" /> ₹{j.salary} LPA</p>
-                  </div>
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-200">
-                    <div className="flex items-center gap-3">
-                      <span className={`px-4 py-1.5 rounded-full text-xs font-semibold ${j.status === "Closed" ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}`}>
-                        {j.status || "Open"}
-                      </span>
-                      <span className="bg-[#FF9F4F] text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 border border-[#B85D34]">
-                        <FaUsers className="text-white" /> {j.applicants?.length || 0}
-                      </span>
-                    </div>
-                    <button
-                       className="bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 transform hover:scale-105 active:scale-95"
-                      onClick={() => navigate(`/companyDashboard/applicants/${j._id}`)}
-                    >
-                      View Applicants
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Employee Browse Section */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className={`flex flex-col sm:flex-row gap-6 justify-between items-center mb-8 pb-5 border-b-2 border-gray-200 ${fadeIn} delay-500`}>
-          <h2 className="text-3xl font-bold text-[#6B3226]">Browse Employees</h2>
-          <div className="flex items-center gap-4">
-            <label htmlFor="skill-filter" className="font-semibold text-gray-700 text-base flex items-center gap-2">
-              <FaFilter className="text-gray-500 text-lg" /> Filter by Skill:
-            </label>
-            <div className="relative w-full sm:w-auto custom-select-wrapper group"> {/* Added group for custom-select-wrapper */}
-              <select
-                id="skill-filter"
-                className="block appearance-none w-full bg-[#FFF8E7] border-2 border-[#FF9F4F] text-[#6B3226] py-3 pl-5 pr-10 rounded-xl leading-tight focus:outline-none text-base transition-all duration-200 ease-in-out shadow-md cursor-pointer
-                           group-hover:border-[#B85D34] focus:border-[#6B3226] focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] focus:shadow-lg hover:shadow-lg"
-                value={selectedSkill}
-                onChange={(e) => setSelectedSkill(e.target.value)}
-              >
-                <option value="">All Skills</option>
-                {skills.map((skill) => (
-                  <option key={skill} value={skill}>{skill}</option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#6B3226]">
-                <FaChevronDown className="h-5 w-5 transition-transform duration-200 transform group-hover:rotate-180 group-focus-within:rotate-180" />
-              </div>
-            </div>
-            <span className="text-gray-700 text-sm ml-4 hidden md:block">
-              Showing <span className="font-semibold text-[#6B3226]">{filtered.length}</span> of <span className="font-semibold text-[#6B3226]">{employees.length}</span> employees
-            </span>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className={`flex justify-center items-center h-64 bg-white rounded-xl shadow-lg border border-gray-100 ${fadeIn} delay-600`}>
-            <div className="text-xl text-[#6B3226] animate-pulse font-medium">Loading employee profiles...</div>
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className={`flex justify-center items-center h-64 flex-col text-center bg-white rounded-xl shadow-lg border border-gray-100 py-16 ${fadeIn} delay-600`}>
-            <FaUserCircle className="text-8xl text-[#6B3226] opacity-30 mb-8 animate-bounce-slow" />
-            <p className="text-xl text-gray-700 font-medium">No employees found matching "{(selectedSkill || 'All Skills').slice(0, 20)}{selectedSkill.length > 20 ? '...' : ''}".</p>
-            {selectedSkill && (
-                <button
-                    className="mt-6 text-[#6B3226] hover:text-[#B85D34] text-base font-semibold transition-colors duration-200"
-                    onClick={() => setSelectedSkill("")}
-                >
-                    Clear Filter
-                </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filtered.map((emp, index) => (
-              <div
-                key={emp._id || emp.id}
-                className={`bg-white rounded-xl shadow-lg p-7 flex flex-col items-center border border-gray-200 group transform hover:-translate-y-2 relative overflow-hidden ${slideInUp} delay-${index * 100 + 700}`}
-              >
-                <div className="absolute top-0 left-0 w-full h-2 bg-[#FF9F4F] animate-gradient-slide-alt"></div> {/* Sunset Amber top border with animation */}
-                <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center mb-5 border-4 border-[#FFE8B4] group-hover:border-[#B85D34] transition-colors duration-300 shadow-md animate-pulse-small">
-                  <span className="text-6xl font-extrabold text-[#6B3226] opacity-70">
-                    {emp.firstName?.[0]}{emp.lastName?.[0]}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-[#6B3226] mb-2 text-center group-hover:text-[#B85D34] transition-colors duration-200">{emp.firstName} {emp.lastName}</h3>
-                <p className="text-base text-gray-700 mb-4 text-center truncate w-full px-2">{emp.email}</p>
-                <div className="flex flex-wrap justify-center gap-2 mb-5 max-w-full">
-                  {emp.skills?.map((skill) => (
-                    <span
-                      key={skill}
-                      className="bg-[#B85D34] text-[#FFE8B4] px-3.5 py-1.5 rounded-full text-xs font-medium border border-[#FF9F4F] opacity-90"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-                <button
-                  className="bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-2.5 rounded-xl text-base font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 transform hover:scale-105 active:scale-95"
-                  onClick={() => setSelectedEmployee(emp)}
-                >
-                  View Profile
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      {/* Feature-based Dashboard */}
+      <FeatureDashboard 
+        jobs={jobs}
+        employees={employees}
+        skills={skills}
+        onSelectSkill={setSelectedSkill}
+        selectedSkill={selectedSkill}
+        loading={loading}
+        setSelectedEmployee={setSelectedEmployee}
+        filtered={filtered}
+        navigate={navigate}
+      />
 
       {/* Profile Modal */}
       {selectedEmployee && (

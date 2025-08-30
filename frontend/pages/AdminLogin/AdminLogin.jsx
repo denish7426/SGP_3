@@ -50,14 +50,14 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="min-h-screen min-w-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="min-h-screen min-w-screen bg-gradient-to-br from-[#FFE8B4] via-[#FFD382] to-[#6B3226] flex items-center justify-center p-4 font-sans">
             <div className="max-w-md w-full space-y-8">
                 <div className="text-center">
-                    <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4">
-                        <FaShieldAlt className="h-8 w-8 text-white" />
+                    <div className="mx-auto h-16 w-16 bg-gradient-to-r from-[#FF9F4F] to-[#B85D34] rounded-full flex items-center justify-center mb-4 shadow-lg animate-pulse-slow">
+                        <FaShieldAlt className="h-8 w-8 text-[#FFE8B4] " />
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Admin Portal</h2>
-                    <p className="text-gray-600">Sign in to access the admin dashboard</p>
+                    <h2 className="text-3xl font-bold text-[#6B3226] mb-2">Admin Portal</h2>
+                    <p className="text-gray-700">Sign in to access the admin dashboard</p>
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
@@ -83,7 +83,7 @@ const AdminLogin = () => {
                                     required
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:border-[#FF9F4F] transition-all duration-200"
                                     placeholder="admin@company.com"
                                 />
                             </div>
@@ -104,13 +104,13 @@ const AdminLogin = () => {
                                     required
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:border-[#FF9F4F] transition-all duration-200"
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors duration-200"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#6B3226] transition-colors duration-200"
                                 >
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
@@ -120,11 +120,11 @@ const AdminLogin = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-[#FFE8B4] bg-[#6B3226] hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B85D34] focus:ring-offset-[#FFE8B4] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-1"
                         >
                             {loading ? (
                                 <div className="flex items-center">
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#FFE8B4] mr-2"></div>
                                     Signing in...
                                 </div>
                             ) : (
@@ -133,14 +133,14 @@ const AdminLogin = () => {
                         </button>
                     </form>
 
-                                         <div className="mt-6 text-center">
-                       <Link
-                         to="/"
-                         className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
-                       >
-                         ← Back to Home
-                       </Link>
-                     </div>
+                    <div className="mt-6 text-center">
+                        <Link
+                            to="/"
+                            className="text-sm text-[#6B3226] hover:text-[#000000] transition-colors duration-200"
+                        >
+                            ← Back to Home
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="text-center text-xs text-gray-500">
