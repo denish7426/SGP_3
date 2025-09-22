@@ -51,14 +51,16 @@ app.get('/health', (req, res) => {
 
 // Import your routes
 const authRoutes = require('./auth/routes/authroutes');
-
 const messageRoutes = require('./routes/messageRoutes');
+const resumeRoutes = require('./routes/resumeRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/resume', resumeRoutes);
 
 console.log("🔗 Auth routes mounted at /api/auth");
 console.log("💬 Message routes mounted at /api/messages");
+console.log("📄 Resume routes mounted at /api/resume");
 
 const adminRoutes = require('./auth/routes/adminRoutes');
 

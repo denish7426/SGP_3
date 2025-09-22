@@ -6,8 +6,41 @@ import { useNavigate } from 'react-router-dom';
 // or
 // yarn add react-icons
 import { FaComments, FaSignOutAlt, FaBriefcase, FaUserCircle, FaChartLine, FaCalendarAlt, FaCheckCircle, FaAward } from 'react-icons/fa'; // Added more icons for dashboard features
+import { FaBell } from 'react-icons/fa';
 
 const Dashboard = () => {
+  // Notification logic
+  const [notifications, setNotifications] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  useEffect(() => {
+    // Standard example: fetch notifications from backend
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/notifications', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Expecting: [{ id, message, read }, ...]
+          setNotifications(data);
+        } else {
+          setNotifications([]);
+        }
+      } catch (err) {
+        setNotifications([]);
+      }
+    };
+    fetchNotifications();
+  }, []);
+  const unreadCount = notifications.filter(n => !n.read).length;
+  const handleBellClick = () => setShowDropdown(!showDropdown);
+  const handleMarkAsRead = (id) => {
+    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+  };
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState(null);
@@ -59,13 +92,65 @@ const Dashboard = () => {
       {/* Header */}
       <header className="bg-white shadow-xl sticky top-0 z-10 border-b-4 border-[#6B3226]">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h1 className={`text-4xl font-extrabold text-[#6B3226] tracking-tight ${fadeIn}`}>Dashboard</h1>
-            <p className={`text-gray-700 text-base mt-1 ${fadeIn} delay-100`}>
-              Welcome back, {userType === 'company' ? user?.companyName : `${user?.firstName} ${user?.lastName}`}!
-            </p>
+          <div style={{ position: "relative", width: "100%" }}>
+
           </div>
-          <div className="flex flex-wrap gap-4">
+            {/* Bell Icon at left side of dashboard header */}
+            <div style={{ position: "relative", marginRight: "16px" }}>
+              <button
+                style={{ background: "none", border: "none", padding: 0 }}
+                onClick={handleBellClick}
+              >
+                <FaBell size={28} style={{ cursor: "pointer" }} />
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    background: "red",
+                    color: "white",
+                    borderRadius: "50%",
+                    padding: "2px 6px",
+                    fontSize: "12px"
+                  }}>{unreadCount}</span>
+                )}
+              </button>
+              {showDropdown && (
+                <div style={{
+                  position: "absolute",
+                  top: 40,
+                  left: 0,
+                  background: "#fff",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                  borderRadius: "8px",
+                  width: "300px",
+                  zIndex: 1000
+                }}>
+                  <h4 style={{ margin: "10px" }}>Notifications</h4>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                    {notifications.length === 0 ? (
+                      <li style={{ padding: "10px" }}>No notifications</li>
+                    ) : (
+                      notifications.map(n => (
+                        <li key={n.id} style={{ padding: "10px", background: n.read ? "#f5f5f5" : "#e6f7ff", borderBottom: "1px solid #eee" }}>
+                          {n.message}
+                          {!n.read && (
+                            <button style={{ marginLeft: "10px", fontSize: "12px" }} onClick={() => handleMarkAsRead(n.id)}>Mark as read</button>
+                          )}
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div>
+              <h1 className={`text-4xl font-extrabold text-[#6B3226] tracking-tight ${fadeIn}`}>Dashboard</h1>
+              <p className={`text-gray-700 text-base mt-1 ${fadeIn} delay-100`}>
+                Welcome back, {userType === 'company' ? user?.companyName : `${user?.firstName} ${user?.lastName}`}!
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4">
             <button
               onClick={() => navigate('/messages')}
               className={`bg-[#B85D34] hover:bg-opacity-90 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#FF9F4F] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] transform hover:-translate-y-1 active:scale-95 ${slideInUp}`}
@@ -92,6 +177,15 @@ const Dashboard = () => {
               Onboarding
             </button>
             <button
+              onClick={() => navigate('/resume-builder')}
+              className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-6 py-3 rounded-xl 
+                font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none 
+                focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-[#FFE8B4] 
+                transform hover:-translate-y-1 active:scale-95 ${slideInUp} delay-150`}
+            >
+              Resume Builder
+            </button>
+            <button
               onClick={handleLogout}
               className={`bg-[#6B3226] hover:bg-opacity-90 text-[#FFE8B4] px-3 py-1 rounded-xl 
                 font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl focus:outline-none 
@@ -107,7 +201,7 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-12 px-4">
-        <div className={`bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100 ${fadeIn} delay-400`}>
+  <div className={`bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100 ${fadeIn} delay-400`}>
           <h3 className="text-3xl font-bold text-[#6B3226] border-b-2 border-gray-200 pb-5 mb-8 flex items-center gap-3">
             <FaUserCircle className="text-[#6B3226] text-2xl" />
             {userType === 'company' ? 'Company Information' : 'Employee Information'}

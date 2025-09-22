@@ -22,6 +22,12 @@ import EmployeeJobFeed from '../pages/Jobs/EmployeeJobFeed.jsx';
 import CompanyProfile from '../pages/CompanyProfile/CompanyProfile.jsx';
 import PostJob from '../pages/CompanyDashboard/PostJob.jsx';
 import ApplicantsList from '../pages/CompanyDashboard/ApplicantsList.jsx';
+import HomePage from '../pages/HomePage/HomePage.jsx';
+
+// Resume Builder Components
+import ResumeBuilder from '../pages/ResumeBuilder/ResumeBuilder.jsx';
+import ResumePreview from '../pages/ResumeBuilder/ResumePreview.jsx';
+import ResumeList from '../pages/ResumeBuilder/ResumeList.jsx';
 
 
 
@@ -29,7 +35,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path='/' element={<HomePage/>} />
+        <Route path="/LandingPage" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -57,6 +64,11 @@ function App() {
                  {/* Admin Routes */}
          <Route path="/admin/login" element={<AdminLogin />} />
          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        {/* Resume Builder Routes */}
+        <Route path="/resume-builder" element={<ResumeBuilder />} />
+        <Route path="/resume-preview" element={<ResumePreview />} />
+        <Route path="/my-resumes" element={<ResumeList />} />
 
       </Routes>
       

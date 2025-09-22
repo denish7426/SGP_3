@@ -11,6 +11,16 @@ import { FaComments, FaSearch, FaFilter, FaMapMarkerAlt, FaCoins, FaStar, FaChec
 const EmployeeJobFeed = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
+  const [contests, setContests] = useState([]);
+  const [myResults, setMyResults] = useState({});
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultDetail, setResultDetail] = useState(null);
+  const [showContest, setShowContest] = useState(false);
+  const [currentContest, setCurrentContest] = useState(null);
+  const [contestQuestions, setContestQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [submitMsg, setSubmitMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [query, setQuery] = useState('');
   const [minFit, setMinFit] = useState(0);
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -23,18 +33,85 @@ const EmployeeJobFeed = () => {
   const fadeIn = "animate-fadeIn";
   const slideInUp = "animate-slideInUp";
 
-  // Fetch jobs from backend
+  // Fetch jobs and contests from backend
   useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchJobsAndContests = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/auth/companyalljobs');
-        setJobs(res.data);
+        const [jobsRes, contestsRes] = await Promise.all([
+          axios.get('http://localhost:3000/api/auth/companyalljobs'),
+          axios.get('http://localhost:3000/api/auth/contests')
+        ]);
+        setJobs(jobsRes.data);
+        setContests(contestsRes.data);
+        // Fetch my results for all contests
+        const employeeId = localStorage.getItem('employeeId');
+        if (employeeId && contestsRes.data.length > 0) {
+          const results = {};
+          await Promise.all(contestsRes.data.map(async (c) => {
+            try {
+              const res = await axios.get(`http://localhost:3000/api/auth/contests/${c._id}/myresult`, { params: { employeeId, contestId: c._id } });
+              if (res.data) results[c._id] = res.data;
+            } catch {}
+          }));
+          setMyResults(results);
+        }
       } catch (err) {
-        console.error('Failed to fetch jobs:', err);
+        console.error('Failed to fetch jobs or contests:', err);
       }
     };
-    fetchJobs();
+    fetchJobsAndContests();
   }, []);
+
+  // Find contest for a job
+  const getContestForJob = (jobId) => contests.find(c => c.jobId === jobId);
+
+  // Handle Take Contest
+  const handleTakeContest = async (contest) => {
+    // Prevent retake if already submitted
+    if (myResults[contest._id]) {
+      setResultDetail(myResults[contest._id]);
+      setShowResultModal(true);
+      return;
+    }
+    setCurrentContest(contest);
+    setShowContest(true);
+    setSubmitMsg("");
+    setSubmitting(false);
+    try {
+      const res = await axios.get(`http://localhost:3000/api/auth/contests/${contest._id}`);
+      setContestQuestions(res.data.questions);
+      setAnswers({});
+    } catch (err) {
+      setContestQuestions([]);
+    }
+  };
+
+  // Handle answer change
+  const handleAnswerChange = (qId, value) => {
+    setAnswers(prev => ({ ...prev, [qId]: value }));
+  };
+
+  // Handle contest submit
+  const handleSubmitContest = async () => {
+    setSubmitting(true);
+    setSubmitMsg("");
+    try {
+      const employeeId = localStorage.getItem('employeeId');
+      const res = await axios.post('http://localhost:3000/api/auth/contests/' + currentContest._id + '/submit', {
+        contestId: currentContest._id,
+        employeeId,
+        answers
+      });
+      setShowContest(false);
+      setResultDetail(res.data);
+      setShowResultModal(true);
+      // Update myResults
+      setMyResults(prev => ({ ...prev, [currentContest._id]: res.data }));
+    } catch (err) {
+      setSubmitMsg('Failed to submit answers.');
+    }
+    setSubmitting(false);
+  };
 
   // Extract all skills and locations from jobs
   const allSkills = useMemo(() => Array.from(new Set(jobs.flatMap((j) => j.skills || []))), [jobs]);
@@ -254,7 +331,106 @@ const EmployeeJobFeed = () => {
                     <button className="bg-gray-200 hover:bg-gray-300 text-[#6B3226] px-6 py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-white">
                       <FaHeart className="inline-block mr-2" /> Save
                     </button>
+                    {(() => {
+                      const contest = getContestForJob(job._id);
+                      if (!contest) return null;
+                      const myResult = myResults[contest._id];
+                      return (
+                        <>
+                          <button
+                            className={`bg-[#FF9F4F] hover:bg-[#B85D34] text-white px-6 py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B85D34] focus:ring-offset-2 focus:ring-offset-white ${myResult ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            onClick={() => handleTakeContest(contest)}
+                            disabled={!!myResult}
+                          >
+                            {myResult ? 'Contest Completed' : '📝 Take Contest'}
+                          </button>
+                          {myResult && (
+                            <div className="text-green-700 font-semibold mt-2">Score: {myResult.score} / {myResult.total || contest.questions?.length || '?'}</div>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
+      {/* Contest Modal */}
+      {showContest && currentContest && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl relative">
+            <button className="absolute top-3 right-3 text-2xl text-gray-400 hover:text-red-500" onClick={() => setShowContest(false)}>
+              ×
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-[#B85D34]">{currentContest.title || 'Contest'}</h2>
+            <form onSubmit={e => { e.preventDefault(); handleSubmitContest(); }}>
+              {contestQuestions.length === 0 ? (
+                <div>Loading questions...</div>
+              ) : (
+                contestQuestions.map((q, idx) => (
+                  <div key={q._id} className="mb-6">
+                    <div className="font-semibold mb-2">Q{idx + 1}. {q.question}</div>
+                    <div className="space-y-2">
+                      {q.options.map((opt, i) => (
+                        <label key={i} className="block cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`q_${q._id}`}
+                            value={opt}
+                            checked={answers[q._id] === opt}
+                            onChange={() => handleAnswerChange(q._id, opt)}
+                            className="mr-2"
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
+              <button type="submit" className="w-full bg-[#B85D34] text-white py-2 rounded font-bold mt-2 hover:bg-[#6B3226] transition" disabled={submitting}>
+                {submitting ? 'Submitting...' : 'Submit Answers'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {submitMsg && (
+        <div className="fixed top-20 right-10 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow z-50">
+          {submitMsg}
+        </div>
+      )}
+
+      {/* Result Modal */}
+      {showResultModal && resultDetail && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl relative">
+            <button className="absolute top-3 right-3 text-2xl text-gray-400 hover:text-red-500" onClick={() => setShowResultModal(false)}>
+              ×
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-[#B85D34]">Your Contest Result</h2>
+            <div className="mb-4 font-semibold text-lg text-green-700">Score: {resultDetail.score} / {resultDetail.total}</div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border text-sm">
+                <thead>
+                  <tr className="bg-[#FFE8B4]">
+                    <th className="px-3 py-2 border">Q#</th>
+                    <th className="px-3 py-2 border">Your Answer</th>
+                    <th className="px-3 py-2 border">Correct Answer</th>
+                    <th className="px-3 py-2 border">Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultDetail.results?.map((r, idx) => (
+                    <tr key={r.questionId || idx} className="border-b">
+                      <td className="px-3 py-2 border">{idx + 1}</td>
+                      <td className="px-3 py-2 border">{r.selectedOption || '-'}</td>
+                      <td className="px-3 py-2 border">{r.correctAnswer}</td>
+                      <td className={`px-3 py-2 border font-bold ${r.isCorrect ? 'text-green-600' : 'text-red-600'}`}>{r.isCorrect ? '✔' : '✗'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
                 </div>
               </div>
             ))

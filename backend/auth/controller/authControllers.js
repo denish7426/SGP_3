@@ -2,6 +2,10 @@ const {User, Company, Employee, Job} = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_here';
+const { Notification } = require('../models/user');
+const Contest = require('../../models/contest');
+const Question = require('../../models/question');
+const { sendMail } = require('../../utils/mailer');
 
 exports.register = async (req, res) => {
     const {username, password, email} = req.body;
@@ -318,8 +322,26 @@ exports.companypostjob = async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
+    // Save the job
     const job = new Job({ title, description, location, salary, companyId });
     await job.save();
+
+    // Get company name
+    let companyName = 'Unknown Company';
+    const company = await Company.findById(companyId);
+    if (company && company.companyName) companyName = company.companyName;
+
+    // Fetch all employees
+    const employees = await Employee.find({});
+    // Create notifications for each employee
+    const notifications = employees.map(emp => ({
+      userId: emp._id,
+      message: `New job posted: ${job.title} at ${companyName}`,
+      read: false,
+      createdAt: new Date()
+    }));
+    await Notification.insertMany(notifications);
+
     res.json({ message: "Job posted successfully", job });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -422,3 +444,125 @@ exports.Applicants = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// Company creates a contest from stored questions
+exports.createContest = async (req, res) => {
+  try {
+    const { title, description, companyId, jobId, questionIds, startTime, endTime } = req.body;
+    if (!title || !companyId || !jobId || !Array.isArray(questionIds) || questionIds.length === 0 || !startTime || !endTime) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    // Validate questions exist
+    const questions = await Question.find({ _id: { $in: questionIds } });
+    if (questions.length !== questionIds.length) {
+      return res.status(400).json({ error: 'Some questions not found' });
+    }
+    const contest = new Contest({
+      title,
+      description,
+      companyId,
+      jobId,
+      questions: questionIds,
+      startTime,
+      endTime
+    });
+    await contest.save();
+
+    // Fetch applicants for the job
+    const job = await Job.findById(jobId).populate('applicants');
+    if (job && job.applicants && job.applicants.length > 0) {
+      for (const applicant of job.applicants) {
+        if (applicant.email) {
+          await sendMail({
+            to: applicant.email,
+            subject: `New Contest: ${title}`,
+            text: `A new contest has been created for the job you applied to. Contest: ${title}. Please check the platform for details.`
+          });
+        }
+      }
+    }
+
+    res.status(201).json({ message: 'Contest created and emails sent to applicants', contest });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get all questions (for contest creation UI)
+exports.getAllQuestions = async (req, res) => {
+  try {
+    const questions = await Question.find();
+    console.log('[DEBUG] getAllQuestions found', questions.length, 'questions');
+    if (questions.length === 0) {
+      console.log('[DEBUG] No questions found. Check DB connection and seeding.');
+    }
+    res.json(questions);
+  } catch (err) {
+    console.error('[DEBUG] Error in getAllQuestions:', err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get all contests (for admin/company view)
+exports.getAllContests = async (req, res) => {
+  try {
+    const contests = await Contest.find().populate('questions').populate('companyId', 'companyName');
+    res.json(contests);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get contest by ID (for employee to participate)
+exports.getContestById = async (req, res) => {
+  try {
+    const contest = await Contest.findById(req.params.id).populate('questions').populate('companyId', 'companyName');
+    if (!contest) return res.status(404).json({ error: 'Contest not found' });
+    res.json(contest);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const ContestSubmission = require('../../models/contestSubmission');
+// Employee submits answers for a contest
+exports.submitContestAnswers = async (req, res) => {
+  try {
+    const { contestId, employeeId, answers } = req.body;
+    // answers: { [questionId]: selectedOption }
+    if (!contestId || !employeeId || !answers || Object.keys(answers).length === 0) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    const contest = await Contest.findById(contestId).populate('questions');
+    if (!contest) return res.status(404).json({ error: 'Contest not found' });
+    // Prevent multiple submissions
+    const existing = await ContestSubmission.findOne({ contestId, employeeId });
+    if (existing) {
+      return res.status(400).json({ error: 'You have already submitted this contest.' });
+    }
+    // Calculate score
+    let score = 0;
+    const results = contest.questions.map(q => {
+      const userAnswer = answers[q._id.toString()];
+      const correct = userAnswer && userAnswer === q.answer;
+      if (correct) score++;
+      return {
+        questionId: q._id,
+        selectedOption: userAnswer || null,
+        correctAnswer: q.answer,
+        isCorrect: correct
+      };
+    });
+    // Save submission
+    await ContestSubmission.create({
+      contestId,
+      employeeId,
+      answers: Object.entries(answers).map(([questionId, answer]) => ({ questionId, answer })),
+      score
+    });
+    res.json({ score, total: contest.questions.length, results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+

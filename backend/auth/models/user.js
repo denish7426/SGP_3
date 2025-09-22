@@ -147,8 +147,17 @@ const jobSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const notificationSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true },
+  message: String,
+  read: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
 const Company = mongoose.model('Company', companySchema);
 const User = mongoose.model('User', userSchema);
 const Employee = mongoose.model('Employee', employeeSchema);
-const Job = mongoose.model('Job', jobSchema)
-module.exports = {User, Company, Employee, Job};
+const Job = mongoose.model('Job', jobSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
+
+module.exports = { User, Company, Employee, Job, Notification };
